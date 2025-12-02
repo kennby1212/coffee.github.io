@@ -399,7 +399,7 @@
         <h2>ユーザー選択</h2>
         <div class="user-display">
           <div class="user-card" data-user="user1" onclick="selectUser('user1')">
-            <div class="user-name">後藤なな</div>
+            <div class="user-name">庞逸凡</div>
             <div class="user-balance" data-user="user1">0円</div>
           </div>
           <div class="user-card" data-user="user2" onclick="selectUser('user2')">
@@ -643,9 +643,9 @@
       // 現在選択中のユーザー
       let currentUser = null;
 
-      // ユーザーデータ
+      // ユーザーデータ - 後藤ななを庞逸凡に変更
       let users = {
-        user1: { balance: 0, name: "後藤なな" },
+        user1: { balance: 0, name: "庞逸凡" },
         user2: { balance: 0, name: "彭月欣" },
         user3: { balance: 0, name: "洪賢美" },
         user4: { balance: 0, name: "戴沅沣" },
@@ -667,7 +667,19 @@
         if (savedData) {
           try {
             const data = JSON.parse(savedData);
-            users = data.users || users;
+            
+            // 旧データから後藤ななさんのデータを庞逸凡さんに移行
+            if (data.users && data.users.user1) {
+              // 名前だけ変更、残高は新入社員なので0円から開始
+              users.user1 = { balance: 0, name: "庞逸凡" };
+              
+              // 他のユーザーのデータは保持
+              if (data.users.user2) users.user2 = data.users.user2;
+              if (data.users.user3) users.user3 = data.users.user3;
+              if (data.users.user4) users.user4 = data.users.user4;
+            }
+            
+            // 取引履歴は保持（ただし表示上の名前は新しい名前になる）
             transactions = data.transactions || transactions;
             monthlyStats = data.monthlyStats || {};
 
@@ -676,6 +688,14 @@
               monthlyStats = {};
               recalculateMonthlyStats();
             }
+            
+            // 取引履歴の後藤ななさんの記録を庞逸凡さんに更新
+            transactions.forEach(trans => {
+              if (trans.message && trans.message.includes("後藤なな")) {
+                trans.message = trans.message.replace("後藤なな", "庞逸凡");
+              }
+            });
+
           } catch (e) {
             console.error("データ読み込みエラー:", e);
             localStorage.removeItem("coffeeSystemDataJPv2");
@@ -914,7 +934,7 @@
                 <tr>
                     <th>年月</th>
                     <th>合計金額</th>
-                    <th>後藤さん</th>
+                    <th>庞さん</th>
                     <th>彭さん</th>
                     <th>洪さん</th>
                     <th>戴さん</th>
@@ -980,108 +1000,4 @@
         isProcessing = true;
 
         try {
-          if (!currentUser) {
-            alert("まずユーザーを選択してください");
-            return;
-          }
-
-          users[currentUser].balance += price;
-          updateBalanceDisplay(currentUser);
-
-          addTransactionLog(
-            `${users[currentUser].name} が ${coffeeName} を購入 (${price}円)`,
-          );
-          saveData();
-        } finally {
-          isProcessing = false;
-        }
-      }
-
-      // 支払い処理
-      function makePayment(amount) {
-        if (isProcessing) return;
-        isProcessing = true;
-
-        try {
-          if (!currentUser) {
-            alert("まずユーザーを選択してください");
-            return;
-          }
-
-          if (users[currentUser].balance < amount) {
-            alert("残高が不足しています");
-            return;
-          }
-
-          users[currentUser].balance -= amount;
-          updateBalanceDisplay(currentUser);
-
-          addTransactionLog(`${users[currentUser].name} が ${amount}円 支払い`);
-          saveData();
-        } finally {
-          isProcessing = false;
-        }
-      }
-
-      // 残高表示を更新
-      function updateBalanceDisplay(userId) {
-        document.querySelector(
-          `.user-balance[data-user="${userId}"]`,
-        ).textContent = `${users[userId].balance}円`;
-
-        if (currentUser === userId) {
-          document.getElementById("current-balance").textContent =
-            `${users[userId].balance}円`;
-        }
-      }
-
-      // 全ユーザーの残高表示を更新
-      function updateAllBalances() {
-        for (const userId in users) {
-          updateBalanceDisplay(userId);
-        }
-      }
-
-      // 全データをリセット
-      function resetAllData() {
-        // ユーザー残高リセット
-        for (const userId in users) {
-          users[userId].balance = 0;
-        }
-
-        // 取引履歴クリア
-        transactions = [];
-
-        // 月別統計クリア
-        monthlyStats = {};
-
-        // UI更新
-        updateAllBalances();
-        updateTransactionList();
-
-        // データ保存
-        saveData();
-
-        // 取消UIを閉じる（もし開いていたら）
-        resetUndoUI();
-
-        alert("全データをリセットしました");
-      }
-
-      // パスワード確認付きリセット
-      function confirmResetAll() {
-        const password = prompt("管理者パスワードを入力してください");
-        if (password === "1689") {
-          if (confirm("本当に全データをリセットしますか？")) {
-            resetAllData();
-          }
-        } else if (password) {
-          alert("パスワードが違います");
-        }
-      }
-
-      // アプリを初期化
-      init();
-    </script>
-  </body>
-</html>
+          if (!current
