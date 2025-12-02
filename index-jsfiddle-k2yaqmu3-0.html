@@ -1000,4 +1000,108 @@
         isProcessing = true;
 
         try {
-          if (!current
+          if (!currentUser) {
+            alert("まずユーザーを選択してください");
+            return;
+          }
+
+          users[currentUser].balance += price;
+          updateBalanceDisplay(currentUser);
+
+          addTransactionLog(
+            `${users[currentUser].name} が ${coffeeName} を購入 (${price}円)`,
+          );
+          saveData();
+        } finally {
+          isProcessing = false;
+        }
+      }
+
+      // 支払い処理
+      function makePayment(amount) {
+        if (isProcessing) return;
+        isProcessing = true;
+
+        try {
+          if (!currentUser) {
+            alert("まずユーザーを選択してください");
+            return;
+          }
+
+          if (users[currentUser].balance < amount) {
+            alert("残高が不足しています");
+            return;
+          }
+
+          users[currentUser].balance -= amount;
+          updateBalanceDisplay(currentUser);
+
+          addTransactionLog(`${users[currentUser].name} が ${amount}円 支払い`);
+          saveData();
+        } finally {
+          isProcessing = false;
+        }
+      }
+
+      // 残高表示を更新
+      function updateBalanceDisplay(userId) {
+        document.querySelector(
+          `.user-balance[data-user="${userId}"]`,
+        ).textContent = `${users[userId].balance}円`;
+
+        if (currentUser === userId) {
+          document.getElementById("current-balance").textContent =
+            `${users[userId].balance}円`;
+        }
+      }
+
+      // 全ユーザーの残高表示を更新
+      function updateAllBalances() {
+        for (const userId in users) {
+          updateBalanceDisplay(userId);
+        }
+      }
+
+      // 全データをリセット
+      function resetAllData() {
+        // ユーザー残高リセット
+        for (const userId in users) {
+          users[userId].balance = 0;
+        }
+
+        // 取引履歴クリア
+        transactions = [];
+
+        // 月別統計クリア
+        monthlyStats = {};
+
+        // UI更新
+        updateAllBalances();
+        updateTransactionList();
+
+        // データ保存
+        saveData();
+
+        // 取消UIを閉じる（もし開いていたら）
+        resetUndoUI();
+
+        alert("全データをリセットしました");
+      }
+
+      // パスワード確認付きリセット
+      function confirmResetAll() {
+        const password = prompt("管理者パスワードを入力してください");
+        if (password === "1689") {
+          if (confirm("本当に全データをリセットしますか？")) {
+            resetAllData();
+          }
+        } else if (password) {
+          alert("パスワードが違います");
+        }
+      }
+
+      // アプリを初期化
+      init();
+    </script>
+  </body>
+</html>
