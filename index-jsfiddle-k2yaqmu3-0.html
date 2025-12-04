@@ -403,11 +403,11 @@
         <div class="user-display">
           <div
             class="user-card"
-            data-user="user5"
-            onclick="selectUser('user5')"
+            data-user="user1"
+            onclick="selectUser('user1')"
           >
             <div class="user-name">庞逸凡</div>
-            <div class="user-balance" data-user="user5">0円</div>
+            <div class="user-balance" data-user="user1">0円</div>
           </div>
           <div
             class="user-card"
@@ -807,7 +807,7 @@
 
       // ユーザーデータ
       let users = {
-        user5: { balance: 0, name: "庞逸凡" },
+        user1: { balance: 0, name: "庞逸凡" },
         user2: { balance: 0, name: "彭月欣" },
         user3: { balance: 0, name: "洪賢美" },
         user4: { balance: 0, name: "戴沅沣" },
@@ -877,7 +877,7 @@
             newMonthlyStats[yearMonth] = {
               total: 0,
               users: {
-                user5: 0,
+                user1: 0,
                 user2: 0,
                 user3: 0,
                 user4: 0,
@@ -1095,7 +1095,7 @@
                 <tr>
                     <td>${yearMonth}</td>
                     <td>${monthlyStats[yearMonth].total.toLocaleString()}円</td>
-                    <td>${monthlyStats[yearMonth].users.user5.toLocaleString()}円</td>
+                    <td>${monthlyStats[yearMonth].users.user1.toLocaleString()}円</td>
                     <td>${monthlyStats[yearMonth].users.user2.toLocaleString()}円</td>
                     <td>${monthlyStats[yearMonth].users.user3.toLocaleString()}円</td>
                     <td>${monthlyStats[yearMonth].users.user4.toLocaleString()}円</td>
